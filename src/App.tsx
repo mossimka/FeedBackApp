@@ -1,30 +1,24 @@
-import { useState } from 'react';
-
 import './App.css';
 import { FeedbackForm } from './components/FeedbackForm';
 import { FeedbackList } from './components/FeedbackList';
-import type { Feedback } from './shared/types';
+import { useFeedbackStore } from './store/useFeedbackStore';
 
 function App() {
-  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
-
-  const addFeedback = (text: string) => {
-    const newFeedback: Feedback = {
-      id: Date.now(),
-      text,
-    };
-    setFeedbacks([...feedbacks, newFeedback]);
-  };
-
-  const deleteFeedback = (id: number) => {
-    setFeedbacks(feedbacks.filter((f) => f.id !== id));
-  };
+  const sortBy = useFeedbackStore((s) => s.sortBy);
+  const setSortBy = useFeedbackStore((s) => s.setSortBy);
 
   return (
     <div>
-      <h1>Feedback App</h1>
-      <FeedbackForm onAdd={addFeedback} />
-      <FeedbackList feedbacks={feedbacks} onDelete={deleteFeedback} />
+      <h1>Feedback App (Zustand)</h1>
+      <FeedbackForm />
+      <div>
+        <label>Sort by: </label>
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'date' | 'likes')}>
+          <option value="date">Date</option>
+          <option value="likes">Likes</option>
+        </select>
+      </div>
+      <FeedbackList />
     </div>
   );
 }

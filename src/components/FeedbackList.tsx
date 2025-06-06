@@ -1,24 +1,21 @@
-import type { Feedback } from '../shared/types';
+import { useFeedbackStore } from '../store/useFeedbackStore';
 import { FeedbackItem } from './FeedbackItem';
 
-type FeedbackListProps = {
-  feedbacks: Feedback[];
-  onDelete: (id: number) => void;
-};
+export const FeedbackList = () => {
+  const feedbacks = useFeedbackStore((s) => s.feedbacks);
+  const sortBy = useFeedbackStore((s) => s.sortBy);
 
-export const FeedbackList = ({ feedbacks, onDelete }: FeedbackListProps) => {
-  if (feedbacks.length === 0) {
-    return <p>No feedback yet</p>;
-  }
+  const sorted = [...feedbacks].sort((a, b) => {
+    if (sortBy === 'likes') return b.likes - a.likes;
+    return b.createdAt.getTime() - a.createdAt.getTime();
+  });
+
+  if (sorted.length === 0) return <p>No feedback yet</p>;
 
   return (
     <ul>
-      {feedbacks.map((feedback) => (
-        <FeedbackItem
-          key={feedback.id}
-          feedback={feedback}
-          onDelete={onDelete}
-        />
+      {sorted.map((f) => (
+        <FeedbackItem key={f.id} feedback={f} />
       ))}
     </ul>
   );

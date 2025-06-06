@@ -1,28 +1,25 @@
 import { useState } from 'react';
+import { useFeedbackStore } from '../store/useFeedbackStore';
 
-type FeedbackFormProps = {
-  onAdd: (text: string) => void;
-};
-
-export const FeedbackForm = ({ onAdd }: FeedbackFormProps) => {
+export const FeedbackForm = () => {
   const [text, setText] = useState('');
+  const addFeedback = useFeedbackStore((s) => s.addFeedback);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!text.trim()) return;
-    onAdd(text);
+    addFeedback(text);
     setText('');
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <input
-        type="text"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Enter your feedback"
+        placeholder="Write your feedback"
       />
-      <button type="submit">Submit</button>
+      <button type="submit">Add</button>
     </form>
   );
 };
