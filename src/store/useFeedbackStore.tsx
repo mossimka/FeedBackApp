@@ -6,15 +6,21 @@ type SortBy = 'date' | 'likes';
 type FeedbackStore = {
   feedbacks: Feedback[];
   sortBy: SortBy;
+  currentPage: number;
+  itemsPerPage: number;
+
   addFeedback: (text: string) => void;
   deleteFeedback: (id: number) => void;
   likeFeedback: (id: number) => void;
   setSortBy: (sortBy: SortBy) => void;
+  setCurrentPage: (itemsPerPage: number) => void;
 };
 
 export const useFeedbackStore = create<FeedbackStore>((set) => ({
   feedbacks: [],
   sortBy: 'date',
+  currentPage: 1,
+  itemsPerPage: 5,
 
   addFeedback: (text) => {
     set((state) => ({
@@ -46,5 +52,6 @@ export const useFeedbackStore = create<FeedbackStore>((set) => ({
 
   setSortBy: (sortBy) => {
     set(() => ({ sortBy }));
-  }
+  },
+  setCurrentPage: (page) => set({ currentPage: page }),
 }));
