@@ -33,11 +33,12 @@ export const FeedbackList = () => {
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`px-3 py-1 rounded border 
-                ${page === currentPage
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-800 hover:bg-blue-100'}
-              `}
+              className={`px-3 py-1 rounded border transition
+                ${
+                  page === currentPage
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-white dark:bg-gray-700 dark:text-white text-gray-800 hover:bg-blue-100 dark:hover:bg-blue-600'
+                }`}
             >
               {page}
             </button>
