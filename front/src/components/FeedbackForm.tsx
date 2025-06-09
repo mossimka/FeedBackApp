@@ -14,8 +14,8 @@ export const FeedbackForm = () => {
   };
 
   const categories = [
-    { id: 1, name: 'Optimization' },
-    { id: 2, name: 'UI' },
+    { id: 1, name: 'UI' },
+    { id: 2, name: 'Optimization' },
     { id: 3, name: 'UX' },
     { id: 4, name: 'Performance' },
   ];

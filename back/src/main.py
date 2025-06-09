@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
 from . import models, service, schemas
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Annotated
 
 app = FastAPI()
 
@@ -30,6 +31,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 @app.get("/")
 def root():
