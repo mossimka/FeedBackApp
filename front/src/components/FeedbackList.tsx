@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useFeedbackStore } from '../store/useFeedbackStore';
 import { FeedbackItem } from './FeedbackItem';
 
@@ -7,20 +8,31 @@ export const FeedbackList = () => {
   const currentPage = useFeedbackStore((s) => s.currentPage);
   const itemsPerPage = useFeedbackStore((s) => s.itemsPerPage);
   const setCurrentPage = useFeedbackStore((s) => s.setCurrentPage);
+  const setFeedbacks = useFeedbackStore((s) => s.setFeedbacks);
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    setFeedbacks()
+      .catch((e) => console.error('Failed to load feedbacks', e))
+      .finally(() => setLoading(false));
+  }, [setFeedbacks]);
+
+  if (loading) return <p>Loading feedbacks...</p>;
+  if (feedbacks.length === 0) return <p>No feedback yet</p>;
 
   const sorted = [...feedbacks].sort((a, b) => {
     if (sortBy === 'likes') return b.likes - a.likes;
-    return b.createdAt.getTime() - a.createdAt.getTime();
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
   const totalPages = Math.ceil(sorted.length / itemsPerPage);
   const startIdx = (currentPage - 1) * itemsPerPage;
   const currentItems = sorted.slice(startIdx, startIdx + itemsPerPage);
 
-  if (sorted.length === 0) return <p>No feedback yet</p>;
-
   return (
-    <div className="w-full  ">
+    <div className="w-full">
       <ul className="space-y-4">
         {currentItems.map((f) => (
           <FeedbackItem key={f.id} feedback={f} />

@@ -11,7 +11,7 @@ class CategoryCreate(CategoryBase):
 class Category(CategoryBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class FeedbackBase(BaseModel):
     text: str
@@ -30,4 +30,4 @@ class Feedback(FeedbackBase):
     created_at: datetime
     category: Category
     class Config:
-        orm_mode = True
+        from_attributes = True

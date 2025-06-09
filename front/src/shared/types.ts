@@ -10,3 +10,13 @@ export type Feedback = {
   createdAt: Date;
   category: Category;
 };
+
+export type FeedbackCreate = {
+  text: string;
+  category_id: number;
+}
+
+export type FeedbackUpdate = {
+  text?: string;
+  likes?: number;
+}

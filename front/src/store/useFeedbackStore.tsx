@@ -1,6 +1,12 @@
 import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { devtools } from 'zustand/middleware';
 import type { Feedback, Category } from '../shared/types';
+import {
+  getAllFeedbacks,
+  createFeedback,
+  deleteFeedback,
+  patchFeedback,
+} from '../api/feedback';
 
 type SortBy = 'date' | 'likes';
 
@@ -12,90 +18,62 @@ type FeedbackStore = {
   theme: 'light' | 'dark';
   categories: Category[];
 
+  setFeedbacks: () => Promise<void>;
   setTheme: (theme: 'light' | 'dark') => void;
-  addFeedback: (text: string, category: Category) => void;
-  deleteFeedback: (id: number) => void;
-  likeFeedback: (id: number) => void;
-  editFeedback: (id: number, text: string) => void;
+  addFeedback: (text: string, category: Category) => Promise<void>;
+  deleteFeedback: (id: number) => Promise<void>;
+  likeFeedback: (id: number) => Promise<void>;
+  editFeedback: (id: number, text: string) => Promise<void>;
   setSortBy: (sortBy: SortBy) => void;
   setCurrentPage: (page: number) => void;
 };
 
 export const useFeedbackStore = create<FeedbackStore>()(
-  devtools(
-    persist(
-      (set) => ({
-        feedbacks: [],
-        sortBy: 'date',
-        theme: 'light',
-        currentPage: 1,
-        itemsPerPage: 5,
-        categories: [],
+  devtools((set, get) => ({
+    feedbacks: [],
+    sortBy: 'date',
+    theme: 'light',
+    currentPage: 1,
+    itemsPerPage: 5,
+    categories: [],
 
-        setTheme: (theme) => set(() => ({ theme })),
+    setTheme: (theme) => set(() => ({ theme })),
 
-        addFeedback: (text, category) => {
-          set((state) => ({
-            feedbacks: [
-              ...state.feedbacks,
-              {
-                id: Date.now(),
-                text,
-                likes: 0,
-                createdAt: new Date(),
-                category,
-              },
-            ],
-          }));
-        },
+    setFeedbacks: async () => {
+      const data = await getAllFeedbacks();
+      set(() => ({ feedbacks: data }));
+    },
 
-        deleteFeedback: (id) => {
-          set((state) => ({
-            feedbacks: state.feedbacks.filter((f) => f.id !== id),
-          }));
-        },
+    addFeedback: async (text, category) => {
+      const newFb = await createFeedback({ text, category_id: category.id });
+      set((state) => ({ feedbacks: [...state.feedbacks, newFb] }));
+    },
 
-        likeFeedback: (id) => {
-          set((state) => ({
-            feedbacks: state.feedbacks.map((f) =>
-              f.id === id ? { ...f, likes: f.likes + 1 } : f
-            ),
-          }));
-        },
+    deleteFeedback: async (id) => {
+      await deleteFeedback(id);
+      set((state) => ({
+        feedbacks: state.feedbacks.filter((f) => f.id !== id),
+      }));
+    },
 
-        editFeedback: (id, text) => {
-          set((state) => ({
-            feedbacks: state.feedbacks.map((f) =>
-              f.id === id ? { ...f, text } : f
-            ),
-          }));
-        },
+    likeFeedback: async (id) => {
+      const feedback = get().feedbacks.find((f) => f.id === id);
+      if (!feedback) return;
 
-        setSortBy: (sortBy) => {
-          set(() => ({ sortBy }));
-        },
+      const updated = await patchFeedback(id, { likes: feedback.likes + 1 });
+      set((state) => ({
+        feedbacks: state.feedbacks.map((f) => (f.id === id ? updated : f)),
+      }));
+    },
 
-        setCurrentPage: (page) => set({ currentPage: page }),
-      }),
-      {
-        name: 'feedback-storage',
-        partialize: (state) => ({
-          feedbacks: state.feedbacks,
-          sortBy: state.sortBy,
-          theme: state.theme,
-        }),
-        merge: (persistedState, currentState) => {
-          const feedbacks = (persistedState as FeedbackStore).feedbacks.map((f) => ({
-            ...f,
-            createdAt: new Date(f.createdAt),
-          }));
-          return {
-            ...currentState,
-            ...persistedState,
-            feedbacks,
-          };
-        },
-      }
-    )
-  )
+    editFeedback: async (id, text) => {
+      const updated = await patchFeedback(id, { text });
+      set((state) => ({
+        feedbacks: state.feedbacks.map((f) => (f.id === id ? updated : f)),
+      }));
+    },
+
+    setSortBy: (sortBy) => set(() => ({ sortBy })),
+    setCurrentPage: (page) => set(() => ({ currentPage: page })),
+  }))
 );

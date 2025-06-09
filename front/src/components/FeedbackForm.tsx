@@ -3,7 +3,6 @@ import { useFeedbackStore } from '../store/useFeedbackStore';
 
 export const FeedbackForm = () => {
   const [text, setText] = useState('');
-  const [category, setCategory] = useState('General');
 
   const addFeedback = useFeedbackStore((s) => s.addFeedback);
 
@@ -13,6 +12,15 @@ export const FeedbackForm = () => {
     addFeedback(text, category);
     setText('');
   };
+
+  const categories = [
+    { id: 1, name: 'Optimization' },
+    { id: 2, name: 'UI' },
+    { id: 3, name: 'UX' },
+    { id: 4, name: 'Performance' },
+  ];
+
+  const [category, setCategory] = useState(categories[0]);
 
   return (
     <form
@@ -26,14 +34,15 @@ export const FeedbackForm = () => {
         className="flex-grow border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
       />
       <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded px-3 py-2 focus:outline-none"
+        value={category.id}
+        onChange={(e) => {
+          const selected = categories.find(c => c.id === +e.target.value);
+          if (selected) setCategory(selected);
+        }}
       >
-        <option value="General">UI</option>
-        <option value="Bug">Performance</option>
-        <option value="Suggestion">Feauture</option>
-        <option value="Question">UX</option>
+        {categories.map(c => (
+          <option key={c.id} value={c.id}>{c.name}</option>
+        ))}
       </select>
       <button
         type="submit"
