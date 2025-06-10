@@ -14,7 +14,7 @@ const SignUpForm = () => {
 
     try {
         const response = await axios.post(
-        'http://localhost:8000/auth/',
+        'https://feedbackapp-ldqr.onrender.com/auth/',
         { username, password },
         {
             headers: {

@@ -14,7 +14,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:8000/auth/token',
+        'https://feedbackapp-ldqr.onrender.com/auth/token',
         new URLSearchParams({ username, password }),
         {
           headers: {
