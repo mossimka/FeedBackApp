@@ -41,7 +41,7 @@ jobs:
 
     - name: Run tests
       env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/feedback
+        DATABASE_URL: postgresql://postgres:postgres@postgres:5432/feedback
       run: |
         cd back
         pytest
