@@ -1,23 +1,39 @@
 import { useEffect } from 'react';
-
 import { FeedbackForm } from './components/FeedbackForm';
 import { FeedbackList } from './components/FeedbackList';
 import { ThemeToggle } from './components/ThemeToggle';
-import { useFeedbackStore} from './store/useFeedbackStore';
+import { useFeedbackStore } from './store/useFeedbackStore';
+import { useAuthStore } from './store/useAuthStore';
+import AuthPage from './AuthPage';
 
 function App() {
   const theme = useFeedbackStore((s) => s.theme);
+  const sortBy = useFeedbackStore((s) => s.sortBy);
+  const setSortBy = useFeedbackStore((s) => s.setSortBy);
+  const token = useAuthStore((s) => s.token);
+  const logout = useAuthStore((s) => s.logout);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
-  const sortBy = useFeedbackStore((s) => s.sortBy);
-  const setSortBy = useFeedbackStore((s) => s.setSortBy);
+
+  if (!token) {
+    return <AuthPage />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 py-10 px-4">
       <div className="max-w-2xl mx-auto bg-white shadow-md rounded-xl p-6 space-y-6">
-        <h1 className="text-3xl font-bold text-center text-gray-800">🗳️ Product Feedback Board</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-gray-800">🗳️ Product Feedback Board</h1>
+          <button
+            onClick={logout}
+            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
+
         <ThemeToggle />
         <FeedbackForm />
 
