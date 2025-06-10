@@ -2,7 +2,7 @@ import axios from "axios";
 import type { FeedbackCreate, Feedback } from "../shared/types";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: "https://feedbackapp-ldqr.onrender.com",
   withCredentials: false,
 });
 
