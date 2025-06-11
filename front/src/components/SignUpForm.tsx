@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 
+const BASE_API_URL = import.meta.env.VITE_BASE_API_URL;
+
 const SignUpForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -13,15 +15,15 @@ const SignUpForm = () => {
     e.preventDefault();
 
     try {
-        const response = await axios.post(
-        'https://feedbackapp-ldqr.onrender.com/auth/',
+      const response = await axios.post(
+        `${BASE_API_URL}/auth/`,
         { username, password },
         {
-            headers: {
+          headers: {
             'Content-Type': 'application/json',
-            },
+          },
         }
-        );
+      );
 
       setToken(response.data.access_token);
       setSuccess('Account created successfully! You are now logged in.');

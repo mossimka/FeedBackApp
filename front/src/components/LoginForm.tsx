@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 import type { AxiosError } from 'axios';
 
+const BASE_API_URL = import.meta.env.VITE_BASE_API_URL;
+
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,7 +16,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post(
-        'https://feedbackapp-ldqr.onrender.com/auth/token',
+        `${BASE_API_URL}/auth/token`,
         new URLSearchParams({ username, password }),
         {
           headers: {

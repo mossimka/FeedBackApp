@@ -28,6 +28,6 @@ class FeedbackUpdate(BaseModel):
 class Feedback(FeedbackBase):
     id: int
     created_at: datetime
-    category: Category
+    category_id: int
     class Config:
         from_attributes = True

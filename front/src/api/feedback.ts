@@ -1,10 +1,5 @@
-import axios from "axios";
+import api from "./api";
 import type { FeedbackCreate, Feedback } from "../shared/types";
-
-const api = axios.create({
-  baseURL: "https://feedbackapp-ldqr.onrender.com",
-  withCredentials: false,
-});
 
 export const getAllFeedbacks = async (): Promise<Feedback[]> => {
   const res = await api.get("/feedbacks");
@@ -16,7 +11,10 @@ export const createFeedback = async (feedback: FeedbackCreate): Promise<Feedback
   return res.data;
 };
 
-export const patchFeedback = async (id: number, updates: Partial<{ text: string; likes: number }>) => {
+export const patchFeedback = async (
+  id: number,
+  updates: Partial<{ text: string; likes: number }>
+) => {
   const res = await api.patch(`/feedbacks/${id}`, updates);
   return res.data;
 };
