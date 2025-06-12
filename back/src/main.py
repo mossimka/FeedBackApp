@@ -11,7 +11,6 @@ from src.auth.service import get_current_user
 print("✅ App started")
 
 app = FastAPI()
-app.include_router(router)
 
 origins = [
     "http://localhost:5173",
@@ -31,6 +30,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(router)
 
 Base.metadata.create_all(bind=engine)
 
